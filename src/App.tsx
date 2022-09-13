@@ -1,18 +1,27 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
 import "./styles/App.css";
+import "./styles/style.scss";
+import "./styles/media-query.css";
 import { Routes, Route } from "react-router-dom";
-import { Navbar } from "./components";
-import { Home } from "./pages";
+import { Header } from "./components";
+import { About, AddEditBlog, Auth, Detail, Home, NotFound } from "./pages";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const [count, setCount] = useState(0);
-
+  const [active, setActive] = useState("home");
   return (
     <>
-      <Navbar />
+      <ToastContainer position="top-center" />
+      <Header active={active} setActive={setActive} />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/detail/:id" element={<Detail />} />
+        <Route path="/create" element={<AddEditBlog />} />
+        <Route path="/update/:id" element={<AddEditBlog />} />
+        <Route path="/login" element={<Auth setActive={setActive} />} />
+        <Route path="/about" element={<About />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
