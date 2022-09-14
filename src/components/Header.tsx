@@ -1,12 +1,16 @@
+import { User } from "firebase/auth";
 import React from "react";
 import { Link } from "react-router-dom";
 
 interface HeaderProps {
   active: string;
   setActive: (active: string) => void;
+  user: User | null;
+  handleLogout: () => void;
 }
 
-const Header = ({ active, setActive }: HeaderProps) => {
+const Header = ({ active, setActive, user, handleLogout }: HeaderProps) => {
+  const userId = user?.uid;
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -63,16 +67,48 @@ const Header = ({ active, setActive }: HeaderProps) => {
                 </ul>
                 <div className="row g-3">
                   <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                    <Link to={"/login"} style={{ textDecoration: "none" }}>
-                      <li
-                        className={`nav-item nav-link ${
-                          active === "login" ? "active" : ""
-                        }`}
-                        onClick={() => setActive("login")}
-                      >
-                        Login
-                      </li>
-                    </Link>
+                    {userId ? (
+                      <>
+                        <div className="profile-logo">
+                          <img
+                            src={
+                              user?.photoURL ||
+                              "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                            }
+                            alt="logo"
+                            style={{
+                              width: "30px",
+                              height: "30px",
+                              borderRadius: "50%",
+                              marginTop: "12px",
+                            }}
+                          />
+                        </div>
+                        <p style={{ marginTop: "12px", marginLeft: "5px" }}>
+                          {user.displayName}
+                        </p>
+                        <li
+                          className="nav-item nav-link"
+                          onClick={handleLogout}
+                        >
+                          Logout
+                        </li>
+                      </>
+                    ) : (
+                      <>
+                        {" "}
+                        <Link to={"/auth"} style={{ textDecoration: "none" }}>
+                          <li
+                            className={`nav-item nav-link ${
+                              active === "login" ? "active" : ""
+                            }`}
+                            onClick={() => setActive("login")}
+                          >
+                            Login
+                          </li>
+                        </Link>
+                      </>
+                    )}
                   </ul>
                 </div>
               </div>

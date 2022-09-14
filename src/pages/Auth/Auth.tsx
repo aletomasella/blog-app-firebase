@@ -1,4 +1,8 @@
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { auth } from "../../services/firebase";
@@ -30,6 +34,18 @@ const Auth = ({ setActive }: AuthProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!singUp) {
+      if (input.email && input.password) {
+        const { user } = await signInWithEmailAndPassword(
+          auth,
+          input.email,
+          input.password
+        );
+        setActive("home");
+        navigate("/");
+        toast.success(`Welcome ${user?.displayName}`);
+      } else {
+        toast.error("Please fill all the fields");
+      }
     } else {
       if (input.password !== input.confirmPassword) {
         return toast.error("Password not match");
