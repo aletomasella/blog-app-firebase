@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./styles/App.css";
 import "./styles/style.scss";
 import "./styles/media-query.css";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import { Header } from "./components";
 import { About, AddEditBlog, Auth, Detail, Home, NotFound } from "./pages";
 import { ToastContainer } from "react-toastify";
@@ -43,10 +43,28 @@ function App() {
         handleLogout={handleLogout}
       />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/detail/:id" element={<Detail />} />
-        <Route path="/create" element={<AddEditBlog user={user} />} />
-        <Route path="/update/:id" element={<AddEditBlog user={user} />} />
+        <Route path="/" element={<Home setActive={setActive} user={user} />} />
+        <Route path="/detail/:id" element={<Detail setActive={setActive} />} />
+        <Route
+          path="/create"
+          element={
+            user?.uid ? (
+              <AddEditBlog user={user} setActive={setActive} />
+            ) : (
+              <Navigate to={"/"} />
+            )
+          }
+        />
+        <Route
+          path="/update/:id"
+          element={
+            user?.uid ? (
+              <AddEditBlog user={user} setActive={setActive} />
+            ) : (
+              <Navigate to={"/"} />
+            )
+          }
+        />
         <Route path="/auth" element={<Auth setActive={setActive} />} />
         <Route path="/about" element={<About />} />
         <Route path="*" element={<NotFound />} />

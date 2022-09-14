@@ -4,14 +4,25 @@ import "@pathofdev/react-tag-input/build/index.css";
 import { blogCategories } from "../../utils";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { db, storage } from "../../services/firebase";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { User } from "firebase/auth";
+import { useNavigate, useParams } from "react-router-dom";
+import { Blog } from "../../models/Blog";
+import { toast } from "react-toastify";
 
 interface AddEditBlogProps {
   user: User | null;
+  setActive: (active: string) => void;
 }
 
-const AddEditBlog = ({ user }: AddEditBlogProps) => {
+const AddEditBlog = ({ user, setActive }: AddEditBlogProps) => {
   const [blog, setBlog] = useState({
     title: "",
     tags: [] as string[],
@@ -25,6 +36,10 @@ const AddEditBlog = ({ user }: AddEditBlogProps) => {
   const [progress, setProgress] = useState(0);
 
   const { title, tags, trending, description, category } = blog;
+
+  const navigate = useNavigate();
+
+  const { id } = useParams();
 
   useEffect(() => {
     const uploadFile = async () => {
@@ -54,6 +69,7 @@ const AddEditBlog = ({ user }: AddEditBlogProps) => {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            toast.info("Image uploaded successfully");
             setBlog((prev) => ({ ...prev, imageUrl: downloadURL }));
           });
         }
@@ -62,6 +78,20 @@ const AddEditBlog = ({ user }: AddEditBlogProps) => {
 
     file && uploadFile();
   }, [file]);
+
+  useEffect(() => {
+    id && getBlogDetails();
+  }, [id]);
+
+  const getBlogDetails = async () => {
+    const docRef = doc(db, "blogs", id as string);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      setBlog({ ...docSnap.data() } as Blog);
+    }
+    setActive("");
+  };
 
   const handleChange = (
     e:
@@ -93,17 +123,36 @@ const AddEditBlog = ({ user }: AddEditBlogProps) => {
       blog.imageUrl &&
       trending
     ) {
-      try {
-        await addDoc(collection(db, "blogs"), {
-          ...blog,
-          timestape: serverTimestamp(),
-          author: user?.displayName,
-          authorId: user?.uid,
-        });
-      } catch (error) {
-        console.error(error);
+      if (!id) {
+        try {
+          await addDoc(collection(db, "blogs"), {
+            ...blog,
+            timestape: serverTimestamp(),
+            author: user?.displayName,
+            authorId: user?.uid,
+          });
+          toast.success("Blog added successfully");
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        try {
+          await updateDoc(doc(db, "blogs", id), {
+            ...blog,
+            timestape: serverTimestamp(),
+            author: user?.displayName,
+            authorId: user?.uid,
+          });
+          toast.success("Blog updated successfully");
+        } catch (error) {
+          console.error(error);
+        }
       }
+    } else {
+      return toast.error("Please fill all the fields");
     }
+
+    navigate("/");
   };
 
   return (
@@ -111,7 +160,9 @@ const AddEditBlog = ({ user }: AddEditBlogProps) => {
       <div className="container-fluid mb-4">
         <div className="container">
           <div className="col-12">
-            <div className="text-center heading py-2">Create Blog</div>
+            <div className="text-center heading py-2">
+              {id ? "Update Blog" : "Create Blog"}
+            </div>
           </div>
           <div className="row h-100 justify-content-center align-items-center">
             <div className="col-10 col-md-8 col-lg-6">
@@ -197,9 +248,9 @@ const AddEditBlog = ({ user }: AddEditBlogProps) => {
                   <button
                     className="btn btn-add"
                     type="submit"
-                    disabled={progress !== null && progress < 100}
+                    disabled={progress !== null && progress < 100 && !id}
                   >
-                    Submit
+                    {id ? "Update" : "Submit"}
                   </button>
                 </div>
               </form>
