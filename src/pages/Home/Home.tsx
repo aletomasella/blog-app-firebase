@@ -1,11 +1,19 @@
 import { User } from "firebase/auth";
-import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Spinner } from "../../components";
 import { Blog } from "../../models/Blog";
 import { db } from "../../services/firebase";
-import { BlogSection, MostPopular, Tags } from "./components";
+import { BlogSection, MostPopular, Tags, Trending } from "./components";
 
 interface HomeProps {
   setActive: (active: string) => void;
@@ -16,8 +24,21 @@ const Home = ({ setActive, user }: HomeProps) => {
   const [loading, setLoading] = useState(true);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+  const [trendingBlogs, setTrendingBlogs] = useState<Blog[]>([]);
+
+  const getTrendingBlogs = async () => {
+    const blogRef = collection(db, "blogs");
+    const queryTrending = query(blogRef, where("trending", "==", "YES"));
+    const querySnapshot = await getDocs(queryTrending);
+    const trendingBlogs: Blog[] = [];
+    querySnapshot.forEach((doc) => {
+      trendingBlogs.push({ id: doc.id, ...doc.data() } as Blog);
+    });
+    setTrendingBlogs(trendingBlogs);
+  };
 
   useEffect(() => {
+    getTrendingBlogs();
     const unsub = onSnapshot(
       collection(db, "blogs"),
       (snapshot) => {
@@ -40,6 +61,7 @@ const Home = ({ setActive, user }: HomeProps) => {
 
     return () => {
       unsub();
+      getTrendingBlogs();
     };
   }, []);
 
@@ -65,7 +87,7 @@ const Home = ({ setActive, user }: HomeProps) => {
       <div className="container-fluid pb-4 pt-4 padding">
         <div className="container padding">
           <div className="row mx-0">
-            <h2>Trending</h2>
+            <Trending blogs={trendingBlogs} />
             <div className="col-md-8">
               <BlogSection
                 blogs={blogs}
