@@ -12,6 +12,7 @@ interface HeaderProps {
 
 const Header = ({ active, setActive, user, handleLogout }: HeaderProps) => {
   const userId = user?.uid;
+  transitions;
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
