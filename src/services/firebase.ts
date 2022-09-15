@@ -2,14 +2,22 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
+const {
+  VITE_API_KEY,
+  VITE_AUTH_DOMAIN,
+  VITE_PROYECT_ID,
+  VITE_STORAGE_BUCKET,
+  VITE_SENDER,
+  VITE_APP_ID,
+} = import.meta.env;
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBzrCpaGTDLappVaYvbN0O4jbrjlnfza0E",
-  authDomain: "blog-app-at.firebaseapp.com",
-  projectId: "blog-app-at",
-  storageBucket: "blog-app-at.appspot.com",
-  messagingSenderId: "922254448246",
-  appId: "1:922254448246:web:deb36664a7c2c6ddb6b157",
+  apiKey: VITE_API_KEY,
+  authDomain: VITE_AUTH_DOMAIN,
+  projectId: VITE_PROYECT_ID,
+  storageBucket: VITE_STORAGE_BUCKET,
+  messagingSenderId: VITE_SENDER,
+  appId: VITE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
