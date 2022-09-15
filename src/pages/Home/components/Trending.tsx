@@ -13,7 +13,7 @@ const Trending = ({ blogs }: TrendingProps) => {
   const [options, setOptions] = useState({
     loop: false,
     margin: 10,
-    new: "true",
+    nav: true,
     responsive: {
       0: {
         items: 1,

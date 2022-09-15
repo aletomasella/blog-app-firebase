@@ -1,6 +1,7 @@
 import { User } from "firebase/auth";
 import React from "react";
 import { Link } from "react-router-dom";
+import * as transitions from "bootstrap/js/dist/collapse";
 
 interface HeaderProps {
   active: string;
@@ -29,11 +30,11 @@ const Header = ({ active, setActive, user, handleLogout }: HeaderProps) => {
               >
                 <span className="fa fa-bars"></span>
               </button>
-              <div className="collapse navbar-collapse">
-                <ul
-                  className="navbar-nav me-auto mb-2 mb-lg-0"
-                  id="navbarSupportedContent"
-                >
+              <div
+                className="collapse navbar-collapse"
+                id="navbarSupportedContent"
+              >
+                <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                   <Link to={"/"} style={{ textDecoration: "none" }}>
                     <li
                       className={`nav-item nav-link ${

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import ReactTagInput from "@pathofdev/react-tag-input";
 import "@pathofdev/react-tag-input/build/index.css";
+import ReactTagInput from "@pathofdev/react-tag-input";
 import { blogCategories } from "../../utils";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { db, storage } from "../../services/firebase";
@@ -106,7 +106,6 @@ const AddEditBlog = ({ user, setActive }: AddEditBlogProps) => {
   };
 
   const handleTags = (tags: string[]) => {
-    console.log(tags);
     setBlog({
       ...blog,
       tags,
