@@ -6,15 +6,24 @@ const About = () => {
       <div className="container padding">
         <div className="col-md-12">
           <div className="row mx-0">
-            <p>
-              lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus
-              beatae possimus incidunt ipsam dolorem, error ducimus inventore
-              rerum voluptatem modi deserunt corporis adipisci qui nostrum
-              molestiae autem at, placeat quidem. Lorem ipsum dolor sit amet
-              consectetur adipisicing elit. Commodi consequatur eos fugit totam
-              rem sit nihil minima quia. Porro dolorem sunt quos voluptates
-              aliquam ducimus quo ipsa eveniet eius dicta!
+            <p className="mt-4 text-center" style={{ fontSize: "18px" }}>
+              Hi I'm Alejandro Tomasella, a full stack developer from Argentina.
+              I have made this blog application to show my skills in React and
+              Typescript, and to learn how to implent Firebase in an
+              application.
+            </p>
+            <p className="mt-4 text-center" style={{ fontSize: "18px" }}>
+              Check my porfolio at{" "}
+            </p>
+            <p className="mt-4 text-center" style={{ fontSize: "18px" }}>
+              <a
+                href="https://portfolioalejandrotomasella.vercel.app/"
+                className="text-warning"
+                style={{ fontWeight: "bold" }}
+                target="_blank"
+              >
+                alejandrotomasella.com
+              </a>
             </p>
           </div>
         </div>
